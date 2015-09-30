@@ -4,7 +4,7 @@ Locations Log
 A web app to save you locations.
 
 ###Live Version
-* [TODO](TODO) 
+* [Alpha mode demo](https://greenido.github.io/LocationLog/main.html) 
 
 Main Goal
 =========
