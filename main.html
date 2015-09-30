@@ -131,12 +131,16 @@
           console.log("User " + authData.uid + " is logged in with " + authData.provider);
           localStorage.setItem("locationslog-authData", JSON.stringify(authData) );
         } else {
-          console.log("User is logged out");
+          console.log("User is logged out :(");
+            // TODO - alert her to login
+
           ref.authWithOAuthPopup("google", function(error, authData) {
               if (error) {
                 console.log("Login Failed!", error);
+                // TODO - show error
               } else {
                 console.log("Authenticated successfully with payload:", authData);
+                // TODO - show an alert and a sign of login
               }
             });
           
@@ -150,6 +154,9 @@
           navigator.geolocation.getCurrentPosition(initialize, showError);
         } else {
           console.log("Geolocation is not supported by this browser");
+          // TODO - show an alert + message to the user
+
+
         }
 
         $("#save-button").click(function () {
@@ -161,7 +168,7 @@
           locKey = locKey.replace(/\./g, "-");
           var curUnixTime = new Date().getTime();
           var disTime = new Date().toJSON().slice(0,21);
-          ref.child("users").child(authData.uid).child(locKey).set({
+          ref.child("users").child(authData.uid).child(authData.google.displayName).child(locKey).set({
             unixTime: curUnixTime,
             date: disTime,
             name: $("#f-point-name").val(),
