@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      #map {
+        width: calc((100% - 10px));
+        height:  500px;
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js"></script>
+    <script>
+      //
+      function getLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(initialize, showError);
+        } else {
+          console.log("Geolocation is not supported by this browser");
+        }
+      }
+
+      //
+      function initialize(position) {
+        var mapCanvas = document.getElementById('map');
+        console.log("** Pos: " + position.coords.latitude + ", " + position.coords.longitude);
+        var mapOptions = {
+          center: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
+          zoom: 12,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        }
+        var map = new google.maps.Map(mapCanvas, mapOptions);
+        
+
+        //
+        var htmlForm = '<form id="newpoint"> <div class="input-field col s6"> <label for="location_name" class="" >Name</label> <input id="location_name" type="text" placeholder="Something..." class="validate" required> </div> <div class="input-field col s6"><label for="comment" class="">Comment</label><textarea id="comment" form="newpoint" placeholder="Enter comments here..."></textarea></div> </form> <button id="cancelButton">Cancel</button> <button id="saveButton">Save</button>';
+        var infowindow = new google.maps.InfoWindow({
+          content: "bla bla + Point: " + htmlForm // + marker.position
+        });
+
+        //
+        //
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var tmpPoint = new google.maps.LatLng(32.0697549, 34.7939255);
+        
+        var marker = new google.maps.Marker({
+          position: tmpPoint,
+          draggable: true,
+          title: "Click to edit",
+          animation: google.maps.Animation.DROP,
+          map: map,
+          icon: iconBase + 'schools_maps.png'
+        });
+
+        marker.addListener('click', function() {
+          infowindow.open(map, marker);
+          toggleBounce(marker);
+        });
+
+      }
+
+      //
+      function toggleBounce(marker) {
+        if (marker.getAnimation() !== null) {
+          marker.setAnimation(null);
+        } else {
+          marker.setAnimation(google.maps.Animation.BOUNCE);
+        }
+      }
+
+      //
+      function showError(error) {
+        var x = document.getElementById("map");
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            x.innerHTML = "Denied the request for Geolocation. Maybe, ask the user in a more polite way?"
+            break;
+          case error.POSITION_UNAVAILABLE:
+            x.innerHTML = "Location information is unavailable.";
+            break;
+          case error.TIMEOUT:
+            x.innerHTML = "The request to get location timed out.";
+            break;
+          case error.UNKNOWN_ERROR:
+            x.innerHTML = "An unknown error occurred :(";
+            break;
+        }
+      }
+      //
+      //
+      google.maps.event.addDomListener(window, 'load', getLocation);
+    </script>
+  </head>
+  <body>
+    <h1>Location Log</h1>
+    <div id="map"></div>
+
+  </body>
+</html>
