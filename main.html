@@ -32,7 +32,6 @@
             <a href="#">Locations Log</a>
           </h1>
         </li>
-        <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
         <li class="toggle-topbar menu-icon">
           <a href="#">
             <span></span>
@@ -186,14 +185,13 @@
         }
         var map = new google.maps.Map(mapCanvas, mapOptions);
         
-
-        //
+        // TODO - remove it!
         var htmlForm = '<form id="newpoint"> <div class="input-field col s6"> <label for="location_name" class="" >Name</label> <input id="location_name" type="text" placeholder="Something..." class="validate" required></div> <div class="input-field col s6"><label for="comment" class="">Comment</label><textarea id="comment" form="newpoint" placeholder="Enter comments here..."></textarea></div> </form> <button id="cancelButton">Cancel</button> <button id="saveButton">Save</button>';
         var infowindow = new google.maps.InfoWindow({
           content: "Point: " + htmlForm // + marker.position
         });
 
-        //
+        
         //
         var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
         var tmpPoint = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
