@@ -7,7 +7,6 @@
   <meta name="author" content="Ido Green | greenido.wordpress.com | @greenido">
   <meta name="theme-color" content="#db5945">
 
-
   <title>Locations Log</title>
   <link rel="stylesheet" href="css/foundation.css" />
   <!-- TODO: move it from here -->
@@ -19,18 +18,159 @@
   </style>
 
   <script src="js/vendor/modernizr.js"></script>
-
+  <script src="https://cdn.firebase.com/js/client/2.3.0/firebase.js"></script>
   <script src="https://maps.googleapis.com/maps/api/js"></script>
-  
+
+</head>
+
+<body>
+  <div class="fixed">
+    <nav class="top-bar" data-topbar role="navigation">
+      <ul class="title-area">
+        <li class="name">
+          <h1>
+            <a href="#">Locations Log</a>
+          </h1>
+        </li>
+        <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+        <li class="toggle-topbar menu-icon">
+          <a href="#">
+            <span></span>
+          </a>
+        </li>
+      </ul>
+
+      <section class="top-bar-section">
+        <!-- Left Nav Section -->
+        <ul class="left">
+          <li>
+            <a href="#add" class="alert button">Add</a>
+          </li>
+          <li class="divider"></li>
+          <li>
+            <a href="#" class="button">History</a>
+          </li>
+          <li class="divider"></li>
+          <li>
+            <a href="#" class="button">Share</a>
+          </li>
+          <li class="divider"></li>
+          <li>
+            <a href="#" class="button">Help</a>
+          </li>
+        </ul>
+      </section>
+    </nav>
+  </div>
+
+  <div class="row">
+    <div id="map" class="large-12 columns">Loading map...</div>
+
+    <div id="add" class="large-10 columns">
+      <form>
+        <fieldset>
+          <legend>New Point</legend>
+          <div class="large-3 small-8">
+            <label>
+              Geo Point
+              <input id="f-geo-point" type="text" disabled></label>
+          </div>
+
+          <label>
+            Name
+            <input id="f-point-name" type="text" placeholder="Type something that you can remember later..."></label>
+
+          <label>
+            Comments
+            <textarea id="f-point-comments" placeholder="Anything else..."></textarea>
+          </label>
+
+        </fieldset>
+
+        <a href="#" id="cancel-button" class="button round">Cancel</a>
+        <a href="#" id="save-button" class="button alert  round">Save It!</a>
+
+      </form>
+
+    </div>
+
+  </div>
+
+  <footer class="row">
+    <div class="large-12 columns">
+      <hr/>
+      <div class="row">
+        <div class="large-6 columns">
+          <p>© Copyright</p>
+        </div>
+        <div class="large-6 columns">
+          <ul class="inline-list right">
+            <li>
+              <a href="#">Share</a>
+            </li>
+            <li>
+              <a href="#">Help</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="js/vendor/jquery.js"></script>
+  <script src="js/foundation.min.js"></script>
+
+  <!-- plugins -->
+  <sript src="js/foundation/foundation.topbar.js"></script>
+
+  <script>$(document).foundation();</script>
   <!-- TODO: move it from here to its own file -->
   <script>
+
+      // Create a callback which logs the current auth state
+      function authDataCallback(authData) {
+        if (authData) {
+          console.log("User " + authData.uid + " is logged in with " + authData.provider);
+          localStorage.setItem("locationslog-authData", JSON.stringify(authData) );
+        } else {
+          console.log("User is logged out");
+          ref.authWithOAuthPopup("google", function(error, authData) {
+              if (error) {
+                console.log("Login Failed!", error);
+              } else {
+                console.log("Authenticated successfully with payload:", authData);
+              }
+            });
+          
+        }
+      }
+      var ref = new Firebase("https://locationslog.firebaseio.com");  
+      ref.onAuth(authDataCallback);
       //
-      function getLocation() {
+      function initAll() {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(initialize, showError);
         } else {
           console.log("Geolocation is not supported by this browser");
         }
+
+        $("#save-button").click(function () {
+          console.log("saving to firebase: " + $("#f-point-name").val() + " , " + 
+              $("#f-geo-point").val());
+          var authData = JSON.parse(localStorage.getItem("locationslog-authData") );
+          var locKey = $("#f-geo-point").val();
+          locKey = locKey.replace(/, /g, "|");
+          locKey = locKey.replace(/\./g, "-");
+          var curUnixTime = new Date().getTime();
+          var disTime = new Date().toJSON().slice(0,21);
+          ref.child("users").child(authData.uid).child(locKey).set({
+            unixTime: curUnixTime,
+            date: disTime,
+            name: $("#f-point-name").val(),
+            comments: $("#f-point-comments").val(),
+            geolocation: $("#f-geo-point").val()
+          
+          });
+        });
       }
 
       //
@@ -50,7 +190,7 @@
         //
         var htmlForm = '<form id="newpoint"> <div class="input-field col s6"> <label for="location_name" class="" >Name</label> <input id="location_name" type="text" placeholder="Something..." class="validate" required></div> <div class="input-field col s6"><label for="comment" class="">Comment</label><textarea id="comment" form="newpoint" placeholder="Enter comments here..."></textarea></div> </form> <button id="cancelButton">Cancel</button> <button id="saveButton">Save</button>';
         var infowindow = new google.maps.InfoWindow({
-          content: "bla bla + Point: " + htmlForm // + marker.position
+          content: "Point: " + htmlForm // + marker.position
         });
 
         //
@@ -108,117 +248,9 @@
       }
       //
       //
-      google.maps.event.addDomListener(window, 'load', getLocation);
+      google.maps.event.addDomListener(window, 'load', initAll);
+
     </script>
-</head>
-
-<body>
-  <div class="fixed">
-    <nav class="top-bar" data-topbar role="navigation">
-      <ul class="title-area">
-        <li class="name">
-          <h1>
-            <a href="#">Locations Log</a>
-          </h1>
-        </li>
-        <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
-        <li class="toggle-topbar menu-icon">
-          <a href="#">
-            <span></span>
-          </a>
-        </li>
-      </ul>
-
-      <section class="top-bar-section">
-        <!-- Left Nav Section -->
-        <ul class="left">
-          <li>
-            <a href="#add" class="alert button">Add</a>
-          </li>
-          <li class="divider"></li>
-          <li>
-            <a href="#" class="button">History</a>
-          </li>
-          <li class="divider"></li>
-          <li>
-            <a href="#" class="button">Share</a>
-          </li>
-          <li class="divider"></li>
-          <li>
-            <a href="#" class="button">Help</a>
-          </li>
-        </ul>
-      </section>
-    </nav>
-  </div>
-
-  <div class="row">
-    <div id="map" class="large-12 columns">bla-bla</div>
-
-    <div id="add" class="large-10 columns">
-      <form>
-        <fieldset>
-          <legend>New Point</legend>
-          <div class="large-3 small-8">
-            <label>Geo Point
-              <input id="f-geo-point" type="text" disabled>
-            </label>
-          </div>
-
-          <label>Name
-            <input type="text" placeholder="Type something that you can remember later...">
-          </label>
-
-          <label>Comments
-            <textarea placeholder="Anything else..."></textarea>
-          </label>
-
-          
-        </fieldset>
-          
-          <a href="#" id="cancel-button" class="button round">Cancel</a>
-          <a href="#" id="save-button" class="button alert  round">Save It!</a>
-        
-      </form>
-     
-    </div>
-
-  </div>
-
-
-  <footer class="row">
-    <div class="large-12 columns">
-      <hr/>
-      <div class="row">
-        <div class="large-6 columns">
-          <p>© Copyright</p>
-        </div>
-        <div class="large-6 columns">
-          <ul class="inline-list right">
-            <li>
-              <a href="#">Section 1</a>
-            </li>
-            <li>
-              <a href="#">Section 2</a>
-            </li>
-            <li>
-              <a href="#">Section 3</a>
-            </li>
-            <li>
-              <a href="#">Section 4</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </footer>
-  <script src="js/vendor/jquery.js"></script>
-  <script src="js/foundation.min.js"></script>
-
-  <!-- plugins -->
-  <sript src="js/foundation/foundation.topbar.js"></script>
-
-  <script>$(document).foundation();</script>
 
   <!-- GA -->
   <script>
