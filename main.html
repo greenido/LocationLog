@@ -23,6 +23,9 @@
     #cancel-button {
       float: right;
     }
+    .saved-alert {
+      display: none;
+    }
   </style>
 
   <script src="js/vendor/modernizr.js"></script>
@@ -89,6 +92,11 @@
         <fieldset>
           <legend>The Location</legend>
           <div class="row ">
+            <div data-alert class="alert-box success radius saved-alert">
+              Saved :)
+              <a href="#" class="close">&times;</a>
+            </div>
+          
             <div class="large-5 small-7 columns">
               <label>
                 Geo Point
@@ -153,6 +161,7 @@
 
   <!-- plugins -->
   <sript src="js/foundation/foundation.topbar.js"></script>
+  <script src="js/foundation/foundation.alert.js"></script>
 
   <script>$(document).foundation();</script>
   <!-- TODO: move it from here to its own file -->
@@ -162,7 +171,6 @@
         // TODO - quick spinner
         navigator.geolocation.getCurrentPosition(initialize, showError);
       });
-
 
       $("#cancel-button").click(function() {
         $("#f-point-name").val("");
@@ -220,8 +228,16 @@
             name: $("#f-point-name").val(),
             comments: $("#f-point-comments").val(),
             geolocation: $("#f-geo-point").val()
-          });
-
+          } ,function(error) {
+            if (error) {
+              alert("Data could not be saved :( Details: " + error);
+            } else {
+              $(".saved-alert").show();
+              setTimeout(function(){ 
+                $("saved-alert").hide();
+              }, 1500);
+            }
+          })
           // TODO - confirmation on the save
         });
       }
