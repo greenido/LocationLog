@@ -152,35 +152,8 @@
           Sort by name
         </button>
 
-        <ul class="list">
-          <li>
-            <h3 class="name">Jonny Stromberg</h3>
-            <p class="date">1986</p>
-            <p class="comments">1bla-bla986</p>
-            <a href="https://www.google.co.il/maps/place/40.702147,-74.015794" target="_blank">
-              <img src="https://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY&zoom=13&size=600x300&maptype=roadmap&markers=color:blue%7Clabel:S%7C40.702147,-74.015794&key=AIzaSyDNWdR5u6t1bB9wz7pk_BFsjKM2cK8b3eU">
-            </a>
-          </li>
-          <li>
-            <h3 class="name">Jonas Arnklint</h3>
-            <p class="date">1985</p>
-            <p class="comments">1bla-bla986</p>
-            <img src="https://maps.googleapis.com/maps/api/staticmap?center=40.702147,-74.015794&zoom=19&size=600x300&maptype=roadmap&markers=color:blue%7Clabel:S%7C40.702147,-74.015794&key=AIzaSyDNWdR5u6t1bB9wz7pk_BFsjKM2cK8b3eU">
-          </li>
-          <li>
-            <h3 class="name">Martina Elm</h3>
-            <p class="date">1986</p>
-            <p class="comments">1bla-bla986</p>
-            <img src="https://maps.googleapis.com/maps/api/staticmap?maptype=roadmap&center=32.530101,32.600062&zoom=8&size=600x300&key=AIzaSyDNWdR5u6t1bB9wz7pk_BFsjKM2cK8b3eU">
-          </li>
-          <li>
-            <h3 class="name">Gustaf Lindqvist</h3>
-            <p class="date">1983</p>
-            <p class="comments">1bla-bla986</p>
-            <img src="https://maps.googleapis.com/maps/api/staticmap?maptype=roadmap&center=32.530101,32.100062&zoom=12&size=600x300&key=AIzaSyDNWdR5u6t1bB9wz7pk_BFsjKM2cK8b3eU">
-          </li>
+        <ul class="list" id="poi-list-ul">
         </ul>
-
       </div>
 
     
@@ -243,8 +216,20 @@
         var ref = new Firebase("https://locationslog.firebaseio.com/users/" + 
             authData.uid + "/" + authData.google.displayName);
         // Attach an asynchronous callback to read the data at our posts reference
-        ref.on("value", function(snapshot) {
-          console.log("Got: " + JSON.stringify(snapshot.val()) );
+        ref.once("value", function(snapshot) {
+          snapshot.forEach(function(childSnapshot) {
+            // key will be "fred" the first time and "barney" the second time
+            var key = childSnapshot.key();
+            // childData will be the actual contents of the child
+            var childData = childSnapshot.val();
+            var cDataHTML = '<li><h4 class="name">' + childData.name + '</h4><p class="date">' +
+                childData.date + '</p><p class="comments">' + childData.comments + 
+                '</p><a href="https://www.google.co.il/maps/place/' + childData.geolocation + '" target="_blank"><img src="https://maps.googleapis.com/maps/api/staticmap?center=' + childData.geolocation + '&zoom=14&size=600x300&maptype=roadmap&markers=color:blue%7Clabel:S%7C' + childData.geolocation + '&key=AIzaSyDNWdR5u6t1bB9wz7pk_BFsjKM2cK8b3eU"></a></li>';
+            $("#poi-list-ul").append(cDataHTML);
+            console.log("key: " + key + " Got: " + JSON.stringify(childData) );  
+          });
+          //console.log("Got: " + JSON.stringify(snapshot.val()) );
+
         }, function (errorObject) {
           console.log("ERROR: could not read locations for: " + authData.uid + " Details: " + errorObject.code);
         });
