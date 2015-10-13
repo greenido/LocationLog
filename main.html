@@ -10,7 +10,6 @@
   <title>Locations Log</title>
   <link rel="stylesheet" href="css/foundation.css" />
   <link rel="stylesheet" href="img/foundation-icons/foundation-icons.css" />
-  
 
   <!-- TODO: move it from here -->
   <style>
@@ -63,33 +62,44 @@
         <!-- Left Nav Section -->
         <ul class="left">
           <li>
-            <a href="#" id="add-but" class="alert button"><i class="fi-target-two "></i>&nbsp;Reload</a>
+            <a href="#" id="add-but" class="alert button"> <i class="fi-target-two "></i>
+              &nbsp;Reload
+            </a>
           </li>
           <li class="divider"></li>
-          <li> 
-            <a href="#" id="history-but" data-reveal-id="history-modal" class="warning button">
-            <i class="fi-book-bookmark"></i>&nbsp;History</a>
+          <li>
+            <a href="#" id="history-but" data-reveal-id="history-modal" class="warning button"> <i class="fi-book-bookmark"></i>
+              &nbsp;History
+            </a>
           </li>
           <li class="divider"></li>
 
           <li>
-            <a href="mailto:" class="button"> <i class="fi-mail size-48"></i>&nbsp;Share</a>
+            <a href="mailto:?subject=Location Log&body=Hey, Check this: https://greenido.github.io/LocationLog/main.html " target="_blank" class="button">
+              <i class="fi-mail size-48"></i>
+              &nbsp;Share
+            </a>
           </li>
           <li class="divider"></li>
           <li>
-            <a href="#" class="button"><i class="fi-info"></i>&nbsp;Help</a>
+            <a href="#" class="button">
+              <i class="fi-info"></i>
+              &nbsp;Help
+            </a>
           </li>
         </ul>
 
         <!-- Right Nav Section -->
-    <ul class="right">
-      <li class="has-dropdown">
-        <a href="#" id="sign-but" >SignIn</a>
-        <ul class="dropdown">
-          <li ><a href="#">Profile</a></li>
+        <ul class="right">
+          <li class="has-dropdown">
+            <a href="#" id="sign-but" >SignIn</a>
+            <ul class="dropdown">
+              <li >
+                <a href="#">Profile</a>
+              </li>
+            </ul>
+          </li>
         </ul>
-      </li>
-    </ul>
 
       </section>
     </nav>
@@ -107,30 +117,28 @@
               Saved :)
               <a href="#" class="close">&times;</a>
             </div>
-          
+
             <div class="large-5 small-7 columns">
               <label>
                 Geo Point
-                <input id="f-geo-point" type="text" disabled>
-              </label>
+                <input id="f-geo-point" type="text" disabled></label>
             </div>
             <div class="large-2 small-2 columns">
-            <label>&nbsp; </label>
-             <a href="#" id="save-button" class="button alert small round" >Save!</a>
+              <label>&nbsp;</label>
+              <a href="#" id="save-button" class="button alert small round" >Save!</a>
             </div>
           </div>
 
           <label>
             Name
-            <input id="f-point-name" type="text" placeholder="Type something that you can remember later...">
-          </label>
+            <input id="f-point-name" type="text" placeholder="Type something that you can remember later..."></label>
 
           <label>
             Comments
             <textarea id="f-point-comments" placeholder="Anything else..."></textarea>
           </label>
 
-        <a href="#" id="cancel-button" class="button small round" >Clear</a>
+          <a href="#" id="cancel-button" class="button small round" >Clear</a>
         </fieldset>
 
       </form>
@@ -143,20 +151,15 @@
   <div id="history-modal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
     <h2 id="modalTitle">Your History</h2>
     <p class="lead">Summary: TODO</p>
-    <p>List of locations.... 
-
-
+    <p>
+      List of locations....
       <div id="poi-list">
         <input class="search" placeholder="Search" />
-        <button class="sort" data-sort="name">
-          Sort by name
-        </button>
+        <button class="sort" data-sort="name">Sort by name</button>
 
-        <ul class="list" id="poi-list-ul">
-        </ul>
+        <ul class="list" id="poi-list-ul"></ul>
       </div>
 
-    
     </p>
     <a class="close-reveal-modal" aria-label="Close">&#215;</a>
   </div>
@@ -164,7 +167,9 @@
   <div id="sign-modal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
     <h2 id="modalTitle">Hey!</h2>
     <p class="lead">Please make sure you have a connection to the net.</p>
-    <p>Also, we need you to sing in in order to save the locations. Cool?</p>
+    <p>
+      Also, we need you to sing in in order to save the locations. Cool?
+    </p>
     <a class="close-reveal-modal" aria-label="Close">&#215;</a>
   </div>
 
@@ -199,10 +204,6 @@
   <script>$(document).foundation();</script>
   <!-- TODO: move it from here to its own file -->
   <script>
-        var options = {
-        valueNames: [ 'name', 'date', 'comments' ]
-      };
-      var userList = new List('poi-list', options);
 
       //
       $("#add-but").click(function() {
@@ -229,7 +230,8 @@
             console.log("key: " + key + " Got: " + JSON.stringify(childData) );  
           });
           //console.log("Got: " + JSON.stringify(snapshot.val()) );
-
+          var options = { valueNames: [ 'name', 'date', 'comments' , 'map'] };
+          var poiList = new List('poi-list', options);
         }, function (errorObject) {
           console.log("ERROR: could not read locations for: " + authData.uid + " Details: " + errorObject.code);
         });
@@ -351,7 +353,6 @@
         });
 
         marker.addListener('mouseup', function(e) {
-          //console.log("mouseup: " + JSON.stringify(e));
           $("#f-geo-point").val(e.latLng.H.toFixed(5) + ", " + e.latLng.H.toFixed(5)); 
         });
 
