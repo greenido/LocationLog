@@ -26,6 +26,10 @@
     .saved-alert {
       display: none;
     }
+    input#f-geo-point {
+      font-size: 90%;
+    }
+
   </style>
 
   <script src="js/vendor/modernizr.js"></script>
@@ -214,6 +218,11 @@
         }
 
         $("#save-button").click(function () {
+          if ($("#f-point-name").val().length < 2) {
+            alert("Please give a name - So you could remember it in the future!");
+            $("#f-point-name").focus();
+            return;
+          }
           console.log("saving to firebase: " + $("#f-point-name").val() + " , " + 
               $("#f-geo-point").val());
           var authData = JSON.parse(localStorage.getItem("locationslog-authData") );
@@ -234,7 +243,7 @@
             } else {
               $(".saved-alert").show();
               setTimeout(function(){ 
-                $("saved-alert").hide();
+                $(".saved-alert").hide();
               }, 1500);
             }
           })
