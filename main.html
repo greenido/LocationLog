@@ -10,6 +10,7 @@
   <title>Locations Log</title>
   <link rel="stylesheet" href="css/foundation.css" />
   <link rel="stylesheet" href="img/foundation-icons/foundation-icons.css" />
+  
 
   <!-- TODO: move it from here -->
   <style>
@@ -29,12 +30,16 @@
     input#f-geo-point {
       font-size: 90%;
     }
+    fieldset {
+        background-color: rgba(192, 227, 233, 0.39);
+    }
 
   </style>
 
   <script src="js/vendor/modernizr.js"></script>
   <script src="https://cdn.firebase.com/js/client/2.3.0/firebase.js"></script>
-  <script src="https://maps.googleapis.com/maps/api/js"></script>
+  <!-- G Maps -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDNWdR5u6t1bB9wz7pk_BFsjKM2cK8b3eU"></script>
 
 </head>
 
@@ -140,8 +145,45 @@
     <p class="lead">Summary: TODO</p>
     <p>List of locations.... 
 
-    TODO
 
+      <div id="poi-list">
+        <input class="search" placeholder="Search" />
+        <button class="sort" data-sort="name">
+          Sort by name
+        </button>
+
+        <ul class="list">
+          <li>
+            <h3 class="name">Jonny Stromberg</h3>
+            <p class="date">1986</p>
+            <p class="comments">1bla-bla986</p>
+            <a href="https://www.google.co.il/maps/place/40.702147,-74.015794" target="_blank">
+              <img src="https://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY&zoom=13&size=600x300&maptype=roadmap&markers=color:blue%7Clabel:S%7C40.702147,-74.015794&key=AIzaSyDNWdR5u6t1bB9wz7pk_BFsjKM2cK8b3eU">
+            </a>
+          </li>
+          <li>
+            <h3 class="name">Jonas Arnklint</h3>
+            <p class="date">1985</p>
+            <p class="comments">1bla-bla986</p>
+            <img src="https://maps.googleapis.com/maps/api/staticmap?center=40.702147,-74.015794&zoom=19&size=600x300&maptype=roadmap&markers=color:blue%7Clabel:S%7C40.702147,-74.015794&key=AIzaSyDNWdR5u6t1bB9wz7pk_BFsjKM2cK8b3eU">
+          </li>
+          <li>
+            <h3 class="name">Martina Elm</h3>
+            <p class="date">1986</p>
+            <p class="comments">1bla-bla986</p>
+            <img src="https://maps.googleapis.com/maps/api/staticmap?maptype=roadmap&center=32.530101,32.600062&zoom=8&size=600x300&key=AIzaSyDNWdR5u6t1bB9wz7pk_BFsjKM2cK8b3eU">
+          </li>
+          <li>
+            <h3 class="name">Gustaf Lindqvist</h3>
+            <p class="date">1983</p>
+            <p class="comments">1bla-bla986</p>
+            <img src="https://maps.googleapis.com/maps/api/staticmap?maptype=roadmap&center=32.530101,32.100062&zoom=12&size=600x300&key=AIzaSyDNWdR5u6t1bB9wz7pk_BFsjKM2cK8b3eU">
+          </li>
+        </ul>
+
+      </div>
+
+    
     </p>
     <a class="close-reveal-modal" aria-label="Close">&#215;</a>
   </div>
@@ -175,6 +217,7 @@
   </footer>
   <script src="js/vendor/jquery.js"></script>
   <script src="js/foundation.min.js"></script>
+  <script src="http://listjs.com/no-cdn/list.js"></script>
 
   <!-- plugins -->
   <sript src="js/foundation/foundation.topbar.js"></script>
@@ -183,6 +226,11 @@
   <script>$(document).foundation();</script>
   <!-- TODO: move it from here to its own file -->
   <script>
+        var options = {
+        valueNames: [ 'name', 'date', 'comments' ]
+      };
+      var userList = new List('poi-list', options);
+
       //
       $("#add-but").click(function() {
         // TODO - quick spinner
