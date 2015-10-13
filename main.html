@@ -9,11 +9,19 @@
 
   <title>Locations Log</title>
   <link rel="stylesheet" href="css/foundation.css" />
+  <link rel="stylesheet" href="img/foundation-icons/foundation-icons.css" />
+
   <!-- TODO: move it from here -->
   <style>
     #map {
       width: calc((100% - 10px));
       height:  300px;
+    }
+    #save-button {
+      float: right;
+    }
+    #cancel-button {
+      float: right;
     }
   </style>
 
@@ -43,21 +51,32 @@
         <!-- Left Nav Section -->
         <ul class="left">
           <li>
-            <a href="#add" class="alert button">Add</a>
+            <a href="#" id="add-but" class="alert button"><i class="fi-target-two "></i></a>
+          </li>
+          <li class="divider"></li>
+          
+          <li class="divider"></li>
+          <li>
+
+            <a href="#" class="button"> <i class="fi-mail size-48"></i></a>
           </li>
           <li class="divider"></li>
           <li>
-            <a href="#" class="button">History</a>
-          </li>
-          <li class="divider"></li>
-          <li>
-            <a href="#" class="button">Share</a>
-          </li>
-          <li class="divider"></li>
-          <li>
-            <a href="#" class="button">Help</a>
+            <a href="#" class="button"><i class="fi-info"></i></a>
           </li>
         </ul>
+
+        <!-- Right Nav Section -->
+    <ul class="right">
+      <li class="has-dropdown">
+        <a href="#" id="sign-but" >SignIn</a>
+        <ul class="dropdown">
+          <li class="active"><a href="#" id="history-but">History</a></li>
+          <li ><a href="#">Profile</a></li>
+        </ul>
+      </li>
+    </ul>
+
       </section>
     </nav>
   </div>
@@ -68,31 +87,45 @@
     <div id="add" class="large-10 columns">
       <form>
         <fieldset>
-          <legend>New Point</legend>
-          <div class="large-3 small-8">
-            <label>
-              Geo Point
-              <input id="f-geo-point" type="text" disabled></label>
+          <legend>The Location</legend>
+          <div class="row ">
+            <div class="large-5 small-7 columns">
+              <label>
+                Geo Point
+                <input id="f-geo-point" type="text" disabled>
+              </label>
+            </div>
+            <div class="large-2 small-2 columns">
+            <label>&nbsp; </label>
+             <a href="#" id="save-button" class="button alert small round" >Save!</a>
+            </div>
           </div>
 
           <label>
             Name
-            <input id="f-point-name" type="text" placeholder="Type something that you can remember later..."></label>
+            <input id="f-point-name" type="text" placeholder="Type something that you can remember later...">
+          </label>
 
           <label>
             Comments
             <textarea id="f-point-comments" placeholder="Anything else..."></textarea>
           </label>
 
+        <a href="#" id="cancel-button" class="button small round" >Clear</a>
         </fieldset>
-
-        <a href="#" id="cancel-button" class="button round">Cancel</a>
-        <a href="#" id="save-button" class="button alert  round">Save It!</a>
 
       </form>
 
     </div>
 
+  </div>
+
+
+  <div id="sign-modal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+    <h2 id="modalTitle">Hey!</h2>
+    <p class="lead">Please make sure you have a connection to the net.</p>
+    <p>Also, we need you to sing in in order to save the locations. Cool?</p>
+    <a class="close-reveal-modal" aria-label="Close">&#215;</a>
   </div>
 
   <footer class="row">
@@ -125,14 +158,28 @@
   <!-- TODO: move it from here to its own file -->
   <script>
 
+      $("#add-but").click(function() {
+        // TODO - quick spinner
+        navigator.geolocation.getCurrentPosition(initialize, showError);
+      });
+
+
+      $("#cancel-button").click(function() {
+        $("#f-point-name").val("");
+        $("#f-point-comments").val("");
+      });
+
       // Create a callback which logs the current auth state
       function authDataCallback(authData) {
         if (authData) {
           console.log("User " + authData.uid + " is logged in with " + authData.provider);
+          $("#sign-but").text("Hey " + authData.google.cachedUserProfile.given_name + "!");
           localStorage.setItem("locationslog-authData", JSON.stringify(authData) );
         } else {
           console.log("User is logged out :(");
-            // TODO - alert her to login
+
+          // TODO - alert her to login
+          $('#sign-modal').foundation('reveal', 'open');
 
           ref.authWithOAuthPopup("google", function(error, authData) {
               if (error) {
@@ -155,8 +202,7 @@
         } else {
           console.log("Geolocation is not supported by this browser");
           // TODO - show an alert + message to the user
-
-
+          alert("Geolocation is not supported :( Please enable it.");
         }
 
         $("#save-button").click(function () {
@@ -174,8 +220,9 @@
             name: $("#f-point-name").val(),
             comments: $("#f-point-comments").val(),
             geolocation: $("#f-geo-point").val()
-          
           });
+
+          // TODO - confirmation on the save
         });
       }
 
@@ -206,7 +253,7 @@
         var marker = new google.maps.Marker({
           position: tmpPoint,
           draggable: true,
-          title: "Click to edit",
+          title: "This is the current point - Feel free to move it if you wish.",
           animation: google.maps.Animation.DROP,
           map: map,
           icon: iconBase + 'schools_maps.png'
