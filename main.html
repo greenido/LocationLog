@@ -220,8 +220,13 @@
             name: $("#f-point-name").val(),
             comments: $("#f-point-comments").val(),
             geolocation: $("#f-geo-point").val()
-          });
-
+          } ,function(error) {
+            if (error) {
+              alert("Data could not be saved :( Details: " + error);
+            } else {
+              alert("Data saved successfully!");
+            }
+          })
           // TODO - confirmation on the save
         });
       }
