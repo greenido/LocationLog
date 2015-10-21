@@ -293,6 +293,20 @@
       }
       var ref = new Firebase("https://locationslog.firebaseio.com");  
       ref.onAuth(authDataCallback);
+
+      $("#sign-but").click(function() {
+        ref.authWithOAuthPopup("google", function(error, authData) {
+          if (error) {
+            console.log("Login Failed!", error);
+            // TODO - show error
+          } else {
+            console.log("Authenticated successfully with payload:", authData);
+            // TODO - show an alert and a sign of login
+          }
+        });
+      });
+      
+      
       //
       function initAll() {
         if (navigator.geolocation) {
