@@ -29,6 +29,10 @@
     input#f-geo-point {
       font-size: 90%;
     }
+    input.search {
+      height: 2em;
+      font-size: 120%;
+    }
     fieldset {
         background-color: rgba(192, 227, 233, 0.39);
     }
@@ -149,18 +153,15 @@
 
   <!-- dialogs -->
   <div id="history-modal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
-    <h2 id="modalTitle">Your History</h2>
-    <p class="lead">Summary: TODO</p>
-    <p>
-      List of locations....
+    <h2 id="modalTitle">Locations History</h2>
+    <p class="lead"></p>
       <div id="poi-list">
         <input class="search" placeholder="Search" />
         <button class="sort" data-sort="name">Sort by name</button>
+        <button class="sort" data-sort="date">Sort by Date</button>
 
         <ul class="list" id="poi-list-ul"></ul>
       </div>
-
-    </p>
     <a class="close-reveal-modal" aria-label="Close">&#215;</a>
   </div>
 
@@ -183,10 +184,16 @@
         <div class="large-6 columns">
           <ul class="inline-list right">
             <li>
-              <a href="#" class="button round">Share</a>
+              <a href="mailto:?subject=Location Log&body=Hey, Check this: https://greenido.github.io/LocationLog/main.html " target="_blank" class="button">
+                <i class="fi-mail size-48"></i>
+                &nbsp;Share
+              </a>
             </li>
             <li>
-              <a href="#" class="button round">Help</a>
+              <a href="#" class="button">
+                <i class="fi-info"></i>
+                &nbsp;Help
+              </a>
             </li>
           </ul>
         </div>
@@ -254,7 +261,7 @@
           console.log("User is logged out :(");
 
           // TODO - alert her to login
-          $('#sign-modal').foundation('reveal', 'open');
+          //$('#sign-modal').foundation('reveal', 'open');
 
           ref.authWithOAuthPopup("google", function(error, authData) {
               if (error) {
@@ -353,7 +360,7 @@
         });
 
         marker.addListener('mouseup', function(e) {
-          $("#f-geo-point").val(e.latLng.H.toFixed(5) + ", " + e.latLng.H.toFixed(5)); 
+          $("#f-geo-point").val(e.latLng.lat().toFixed(5) + ", " + e.latLng.lng().toFixed(5) ); 
         });
 
       }
