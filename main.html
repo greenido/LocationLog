@@ -39,6 +39,17 @@
     fieldset {
         background-color: rgba(192, 227, 233, 0.39);
     }
+    .date {
+      font-size: 80%;
+      padding-bottom: 0.6em;
+    }
+    .comments {
+      background-color: aliceblue;
+      padding: 0.3em;
+    }
+    .quimby_search_image {
+      padding-bottom: 1em;
+    }
   </style>
 
   <script src="js/vendor/modernizr.js"></script>
@@ -188,7 +199,7 @@
               </a>
             </li>
             <li>
-              <a href="https://ido-green.appspot.com" target="_blank"" class="button">
+              <a href="https://ido-green.appspot.com" target="_blank" class="button">
                 <i class="fi-info"></i>
                 &nbsp;Help
               </a>
@@ -234,11 +245,12 @@
             var key = childSnapshot.key();
             // childData will be the actual contents of the child
             var childData = childSnapshot.val();
-            var cDataHTML = '<li><h4 class="name">' + childData.name + '</h4><p class="date">' +
-                childData.date + '</p><p class="comments">' + childData.comments + 
-                '</p><a href="https://www.google.co.il/maps/place/' + childData.geolocation + '" target="_blank"><img src="https://maps.googleapis.com/maps/api/staticmap?center=' + childData.geolocation + '&zoom=14&size=600x300&maptype=roadmap&markers=color:blue%7Clabel:S%7C' + childData.geolocation + '&key=AIzaSyDNWdR5u6t1bB9wz7pk_BFsjKM2cK8b3eU"></a></li>';
+            var dateStr = childData.date.replace("T", " ");
+            var cDataHTML = '<li><h4 class="name">' + childData.name + '</h4> <div class="date">' +
+                dateStr + '</div> <div class="comments">' + childData.comments + 
+                '</div> <a href="https://www.google.co.il/maps/place/' + childData.geolocation + '" target="_blank"><img src="https://maps.googleapis.com/maps/api/staticmap?center=' + childData.geolocation + '&zoom=14&size=600x300&maptype=roadmap&markers=color:blue%7Clabel:S%7C' + childData.geolocation + '&key=AIzaSyDNWdR5u6t1bB9wz7pk_BFsjKM2cK8b3eU"></a> <br></li>';
             $("#poi-list-ul").append(cDataHTML);
-            console.log("key: " + key + " Got: " + JSON.stringify(childData) );  
+            //console.log("key: " + key + " Got: " + JSON.stringify(childData) );  
           });
           //console.log("Got: " + JSON.stringify(snapshot.val()) );
           var options = { valueNames: [ 'name', 'date', 'comments' , 'map'] };
@@ -281,6 +293,20 @@
       }
       var ref = new Firebase("https://locationslog.firebaseio.com");  
       ref.onAuth(authDataCallback);
+
+      $("#sign-but").click(function() {
+        ref.authWithOAuthPopup("google", function(error, authData) {
+          if (error) {
+            console.log("Login Failed!", error);
+            // TODO - show error
+          } else {
+            console.log("Authenticated successfully with payload:", authData);
+            // TODO - show an alert and a sign of login
+          }
+        });
+      });
+      
+      
       //
       function initAll() {
         if (navigator.geolocation) {
