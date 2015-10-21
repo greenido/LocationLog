@@ -26,6 +26,9 @@
     .saved-alert {
       display: none;
     }
+    .alert-box {
+      display: none; 
+    }
     input#f-geo-point {
       font-size: 90%;
     }
@@ -36,7 +39,6 @@
     fieldset {
         background-color: rgba(192, 227, 233, 0.39);
     }
-
   </style>
 
   <script src="js/vendor/modernizr.js"></script>
@@ -77,16 +79,8 @@
             </a>
           </li>
           <li class="divider"></li>
-
           <li>
-            <a href="mailto:?subject=Location Log&body=Hey, Check this: https://greenido.github.io/LocationLog/main.html " target="_blank" class="button">
-              <i class="fi-mail size-48"></i>
-              &nbsp;Share
-            </a>
-          </li>
-          <li class="divider"></li>
-          <li>
-            <a href="#" class="button">
+            <a href="https://ido-green.appspot.com" target="_blank" class="button">
               <i class="fi-info"></i>
               &nbsp;Help
             </a>
@@ -143,6 +137,10 @@
           </label>
 
           <a href="#" id="cancel-button" class="button small round" >Clear</a>
+          <button id="share-point-on-gmap" class="btn button small round warning">
+            <i class="fi-page-copy">&nbsp; Share</i>
+          </button> 
+          
         </fieldset>
 
       </form>
@@ -190,7 +188,7 @@
               </a>
             </li>
             <li>
-              <a href="#" class="button">
+              <a href="https://ido-green.appspot.com" target="_blank"" class="button">
                 <i class="fi-info"></i>
                 &nbsp;Help
               </a>
@@ -200,6 +198,7 @@
       </div>
     </div>
   </footer>
+
   <script src="js/vendor/jquery.js"></script>
   <script src="js/foundation.min.js"></script>
   <script src="http://listjs.com/no-cdn/list.js"></script>
@@ -211,11 +210,16 @@
   <script>$(document).foundation();</script>
   <!-- TODO: move it from here to its own file -->
   <script>
-
+    
       //
       $("#add-but").click(function() {
         // TODO - quick spinner
         navigator.geolocation.getCurrentPosition(initialize, showError);
+      });
+
+      //
+      $("#share-point-on-gmap").click(function() {
+        window.open("https://www.google.co.il/maps/place/" + $("#f-geo-point").val());
       });
 
       //
