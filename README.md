@@ -20,8 +20,10 @@ Resources
 
 ToDos
 =====
-* Firebase integration
-* Polish the colors/animation.
+* Firebase integration:
+    - Delete a point from the list
+    - share in real-time a location (open a chat room on it?)
+* Polish the colors / Animation.
 * SW for offline usage (?)
 
 (!) Please feel free to fork or open issues.
